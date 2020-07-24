@@ -69,6 +69,20 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner:       "sbstp",
+			Repo:        "kubie",
+			Name:        "kubie",
+			Version:     "v0.9.1",
+			BinaryTemplate: `{{ if eq .OS "darwin" -}}
+{{.Name}}-darwin-amd64
+{{- else -}}
+	{{.Name}}-linux-amd64
+{{- end -}}`,
+			NoExtension: true,
+		})
+	
+	tools = append(tools,
+		Tool{
 			Owner:       "ahmetb",
 			Repo:        "kubectx",
 			Name:        "kubectx",

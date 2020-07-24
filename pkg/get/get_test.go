@@ -474,3 +474,43 @@ func Test_DownloadInletsctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadKubie(t *testing.T) {
+	tools := MakeTools()
+	name := "kubie"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch   string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "darwin",
+			arch: arch64bit,
+			version: "v0.9.1",
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.9.1/kubie-darwin-amd64"},
+		{os: "linux",
+			arch: arch64bit,
+			version: "v0.5.4",
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.5.4/kubie-linux-amd64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
