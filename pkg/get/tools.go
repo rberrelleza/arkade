@@ -203,5 +203,28 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 {{- end -}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner: "okteto",
+			Repo:  "okteto",
+			Name:  "okteto",
+			Version: "1.8.15",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}.exe
+{{- else if eq .OS "windows" -}}
+{{.Name}}-.exe
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-Darwin-x86_64
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-Linux-arm
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-Linux-arm
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-Linux-arm64
+{{- else -}}
+{{.Name}}-Linux-x86_64
+{{- end -}}`,
+		})
+
 	return tools
 }

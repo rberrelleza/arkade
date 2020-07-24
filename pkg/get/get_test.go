@@ -474,3 +474,55 @@ func Test_DownloadInletsctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadOkteto(t *testing.T) {
+	tools := MakeTools()
+	name := "okteto"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "1.8.15",
+			url:     "https://github.com/okteto/okteto/releases/download/1.8.15/okteto.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "1.8.15",
+			url:     "https://github.com/okteto/okteto/releases/download/1.8.15/okteto-Linux-x86_64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "1.8.15",
+			url:     "https://github.com/okteto/okteto/releases/download/1.8.15/okteto-Darwin-x86_64"},
+		{os: "linux",
+			arch:    "armv6l",
+			version: "1.8.15",
+			url:     "https://github.com/okteto/okteto/releases/download/1.8.15/okteto-Linux-arm"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "1.8.15",
+			url:     "https://github.com/okteto/okteto/releases/download/1.8.15/okteto-Linux-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
