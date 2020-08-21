@@ -582,3 +582,45 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadLens(t *testing.T) {
+	tools := MakeTools()
+	name := "lens"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "3.5.3"
+	const urlTemplate = "https://github.com/lensapp/lens/releases/download/v%s/Lens-%s.%s"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, toolVersion, toolVersion, "exe")},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, toolVersion, toolVersion, "AppImage")},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, toolVersion, toolVersion, "dmg")},
+		// this asserts that we can build a URL for ARM processors, but no asset exists and will yield a 404
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     fmt.Sprintf("https://github.com/lensapp/lens/releases/download/v%s/Lens-%s.%sarm", toolVersion, toolVersion, "AppImage")},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("%s-%s-%s", t.Name(), tc.os, tc.arch), func(t *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

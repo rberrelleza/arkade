@@ -306,5 +306,35 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		https://github.com/digitalocean/doctl/releases/download/v{{.Version}}/doctl-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "lensapp",
+			Repo:    "lens",
+			Name:    "lens",
+			Version: "3.5.3",
+			URLTemplate: `
+			{{$extension := ""}}
+			
+			{{ if HasPrefix .OS "ming" -}}
+			{{$extension = "exe"}}
+			{{- else if eq .OS "linux" -}}
+			{{$extension = "AppImage"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$extension = "zip"}}
+			{{- end -}}
+
+			{{$os := ""}}
+			{{- if eq .OS "darwin" -}}
+			{{$os = "-mac"}}
+			{{- end -}}
+
+			{{$arch := "arm"}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = ""}}
+			{{- end -}}
+				
+			https://github.com/lensapp/lens/releases/download/v{{.Version}}/Lens-{{.Version}}{{$os}}{{$arch}}.{{$extension}}`,
+		})
+
 	return tools
 }
